@@ -1,3 +1,4 @@
+```yaml
 name: EnessCoffee CI
 
 on:
@@ -10,14 +11,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Check Docker Hub credentials
+        env:
+          USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          if [ -z "$USERNAME" ]; then
+            echo "USERNAME IS EMPTY"
+            exit 1
+          fi
+
+          if [ -z "$TOKEN" ]; then
+            echo "TOKEN IS EMPTY"
+            exit 1
+          fi
+
+          echo "Credentials exist"
+          echo "Username: $USERNAME"
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME}}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build frontend image
@@ -40,4 +58,5 @@ jobs:
       - name: Push backend image
         run: |
           docker push \
-            enessermaxhaj/enescoffe-backend:v1.0gdfg
+            enessermaxhaj/enescoffe-backend:v1.0
+```
