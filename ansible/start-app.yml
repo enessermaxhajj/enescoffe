@@ -1,0 +1,13 @@
+- name: Start Eness Coffee
+  hosts: k3s_server
+  become: yes
+
+  tasks:
+    - name: Start frontend
+      command: kubectl scale deployment frontend --replicas=1
+
+    - name: Start backend
+      command: kubectl scale deployment backend --replicas=1
+
+    - name: Start postgres
+      command: kubectl scale deployment postgres --replicas=1

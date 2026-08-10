@@ -1,0 +1,12 @@
+---
+- name: Remove Eness Coffee
+  hosts: k3s-server
+  become: yes
+
+  tasks:
+
+    - name: Remove Helm release
+      command:
+        cmd: helm uninstall enescoffe
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml

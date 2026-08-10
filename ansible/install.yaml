@@ -1,0 +1,39 @@
+---
+- name: Setup Kubernetes Server
+  hosts: k3s-server
+  become: yes
+
+  tasks:
+
+    - name: Update apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - wget
+          - git
+        state: present
+
+    - name: Check if k3s exists
+      command: k3s --version
+      register: k3s_check
+      ignore_errors: yes
+
+    - name: Install k3s
+      shell: |
+        curl -sfL https://get.k3s.io | sh -
+      when: k3s_check.rc != 0
+
+    - name: Check helm
+      command: helm version
+      register: helm_check
+      ignore_errors: yes
+
+    - name: Install Helm
+      shell: |
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      when: helm_check.rc != 0

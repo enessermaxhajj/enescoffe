@@ -1,0 +1,16 @@
+- name: Stop Monitoring
+  hosts: k3s-server
+  become: yes
+
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+  tasks:
+    - name: Stop Grafana
+      command: kubectl scale deployment monitoring-grafana --replicas=0
+
+    - name: Stop Prometheus Operator
+      command: kubectl scale deployment monitoring-kube-prometheus-operator --replicas=0
+
+    - name: Stop kube state metrics
+      command: kubectl scale deployment monitoring-kube-state-metrics --replicas=0

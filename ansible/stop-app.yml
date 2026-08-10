@@ -1,0 +1,16 @@
+- name: Stop Eness Coffee
+  hosts: k3s-server
+  become: yes
+
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+  tasks:
+    - name: Stop frontend
+      command: kubectl scale deployment frontend --replicas=0
+
+    - name: Stop backend
+      command: kubectl scale deployment backend --replicas=0
+
+    - name: Stop postgres
+      command: kubectl scale deployment postgres --replicas=0

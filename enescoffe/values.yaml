@@ -1,0 +1,18 @@
+frontend:
+  image: enessermaxhaj/frontend:latest
+  port: 80
+
+backend:
+  image: enessermaxhaj/backend:1.0
+  port: 3000
+
+postgres:
+  image: postgres:17
+  database: enesscoffee
+  user: postgres
+  password: password
+  storage: 1Gi
+
+ingress:
+  host: enescoffe.local
+  tlsSecret: enescoffe-tls

@@ -1,0 +1,41 @@
+services:
+
+  postgres:
+    image: postgres:17
+
+    container_name: eness-postgres
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: enesscoffee
+
+    volumes:
+       - ./databaze/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    ports:
+      - "5432:5432"
+
+
+  backend:
+    build: ./backend
+
+    container_name: eness-backend
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - postgres
+
+
+  frontend:
+    build: ./frontend
+
+    container_name: eness-frontend
+
+    ports:
+      - "8080:80"
+
+    depends_on:
+      - backend

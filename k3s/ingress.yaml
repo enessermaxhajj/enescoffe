@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: enescoffe-ingress
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: default-backend-strip-api@kubernetescrd
+
+spec:
+  ingressClassName: traefik
+
+  tls:
+  - hosts:
+    - enescoffe.local
+    secretName: enescoffe-tls
+
+  rules:
+  - host: enescoffe.local
+
+    http:
+      paths:
+
+      # Frontend
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+
+      # Backend API
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: backend
+            port:
+              number: 3000

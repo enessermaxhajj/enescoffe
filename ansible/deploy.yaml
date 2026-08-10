@@ -1,0 +1,23 @@
+---
+- name: Deploy Eness Coffee with Helm
+  hosts: k3s-server
+  become: yes
+
+  tasks:
+
+    - name: Create app directory
+      file:
+        path: /opt/enescoffe
+        state: directory
+        mode: '0755'
+
+    - name: Copy Helm chart
+      copy:
+        src: ../enescoffe/
+        dest: /opt/enescoffe/
+
+    - name: Deploy Helm chart
+      command:
+        cmd: helm upgrade --install enescoffe /opt/enescoffe
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
