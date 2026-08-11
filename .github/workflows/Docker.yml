@@ -11,7 +11,7 @@ jobs:
 docker:
 runs-on: ubuntu-latest
 
-```
+,,,
 steps:
   - name: Checkout repository
     uses: actions/checkout@v4
@@ -62,4 +62,3 @@ steps:
       git commit -m "Update images to ${TAG}" || echo "No changes to commit"
 
       git push
-```
