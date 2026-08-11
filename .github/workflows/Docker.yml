@@ -1,61 +1,66 @@
 name: EnessCoffee CI
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - "enescoffe/values.yaml"
+push:
+branches:
+- main
+paths-ignore:
+- "enescoffe/values.yaml"
+
+permissions:
+contents: write
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
+docker:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
-      - name: Set image tag
-        run: echo "TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  - name: Set image tag
+    run: echo "TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      - name: Build frontend image
-        run: |
-          docker build \
-            -t enessermaxhaj/enescoffe-frontend:${TAG} \
-            ./frontend
+  - name: Login to DockerHub
+    uses: docker/login-action@v3
+    with:
+      username: ${{ secrets.DOCKERHUB_USERNAME }}
+      password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build backend image
-        run: |
-          docker build \
-            -t enessermaxhaj/enescoffe-backend:${TAG} \
-            ./backend
+  - name: Build frontend image
+    run: |
+      docker build \
+        -t enessermaxhaj/enescoffe-frontend:${TAG} \
+        ./frontend
 
-      - name: Push frontend image
-        run: |
-          docker push \
-            enessermaxhaj/enescoffe-frontend:${TAG}
+  - name: Build backend image
+    run: |
+      docker build \
+        -t enessermaxhaj/enescoffe-backend:${TAG} \
+        ./backend
 
-      - name: Push backend image
-        run: |
-          docker push \
-            enessermaxhaj/enescoffe-backend:${TAG}
+  - name: Push frontend image
+    run: |
+      docker push \
+        enessermaxhaj/enescoffe-frontend:${TAG}
 
-      - name: Update Helm values
-        run: |
-          sed -i "s|image: enessermaxhaj/enescoffe-frontend:.*|image: enessermaxhaj/enescoffe-frontend:${TAG}|" enescoffe/values.yaml
-          sed -i "s|image: enessermaxhaj/enescoffe-backend:.*|image: enessermaxhaj/enescoffe-backend:${TAG}|" enescoffe/values.yaml
+  - name: Push backend image
+    run: |
+      docker push \
+        enessermaxhaj/enescoffe-backend:${TAG}
 
-      - name: Commit and push Helm values
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+  - name: Update Helm values
+    run: |
+      sed -i "s|image: enessermaxhaj/enescoffe-frontend:.*|image: enessermaxhaj/enescoffe-frontend:${TAG}|" enescoffe/values.yaml
+      sed -i "s|image: enessermaxhaj/enescoffe-backend:.*|image: enessermaxhaj/enescoffe-backend:${TAG}|" enescoffe/values.yaml
 
-          git add enescoffe/values.yaml
-          git commit -m "Update images to ${TAG}" || echo "No changes to commit"
-          git push
+  - name: Commit and push Helm values
+    run: |
+      git config user.name "github-actions[bot]"
+      git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      git add enescoffe/values.yaml
+      git commit -m "Update images to ${TAG}" || echo "No changes to commit"
+      git push
+
