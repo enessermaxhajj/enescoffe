@@ -1,9 +1,9 @@
 frontend:
-  image: enessermaxhaj/enescoffe-frontend:5ac93fc
+  image: enessermaxhaj/enescoffe-frontend:50621b0
   port: 80
 
 backend:
-  image: enessermaxhaj/enescoffe-backend:5ac93fc
+  image: enessermaxhaj/enescoffe-backend:50621b0
   port: 3000
 
 postgres:
