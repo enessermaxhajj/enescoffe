@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: enessermaxhaj/enescoffe-frontend:1.0
+        image: enessermaxhaj/enescoffe-frontend:v1.0
         imagePullPolicy: Always
 
         ports:
